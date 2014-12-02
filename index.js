@@ -111,7 +111,7 @@ function request(uri, options) {
     var authHeader = options.auth.pass === undefined ?
         options.auth.user :
         options.auth.user + ':' + options.auth.pass;
-    options.headers['authorization'] = 'Basic ' + toBase64(authHeader);
+    options.headers['Authorization'] = 'Basic ' + toBase64(authHeader);
   }
   for (var key in options.headers) {
     type('options.headers[' + key + ']', options.headers[key], 'String');
@@ -119,11 +119,11 @@ function request(uri, options) {
       delete options.headers[key];
     }
   }
-  if (module.exports.native && !options.headers['content-type']) {
-    options.headers['content-type'] = '';
+  if (module.exports.native && !options.headers['Content-Type']) {
+    options.headers['Content-Type'] = '';
   }
-  if (module.exports.native && !options.headers['accept']) {
-    options.headers['accept'] = '';
+  if (module.exports.native && !options.headers['Accept']) {
+    options.headers['Accept'] = '';
   }
   var request = new Request(options.uri, options.method, options.headers, options.body);
   var req = module.exports.httpSync.request({
@@ -135,6 +135,7 @@ function request(uri, options) {
     headers: request.headers,
     body: request.body
   });
+  req._headers = request.headers;
   var res = req.end();
   if (options.encoding !== null) {
     res.body = res.body.toString(options.encoding);
@@ -146,7 +147,7 @@ function Request(uri, method, headers, body) {
   this.uri = uri;
   this.method = method;
   this.headers = headers;
-  this.headers['content-length'] = body.length;
+  this.headers['Content-Length'] = body.length;
   this.body = body;
 }
 
